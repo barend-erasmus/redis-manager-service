@@ -91,7 +91,7 @@ export class ClusterService {
         return co(function* () {
             const cluster: Cluster = yield self.find(name);
 
-            yield cluster.nodes.map(x => this.clearNodeKeys(x.ipAddress, x.port, pattern));
+            yield cluster.nodes.map(x => self.clearNodeKeys(x.ipAddress, x.port, pattern));
             return true;
         });
     }

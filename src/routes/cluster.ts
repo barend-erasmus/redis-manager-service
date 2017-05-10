@@ -23,6 +23,7 @@ export class ClusterRouter {
         this.router.get('/find', this.find);
         this.router.get('/details', this.details);
         this.router.post('/clear', this.clear);
+        this.router.get('/listkeys', this.listKeys);
     }
 
     public GetRouter() {
@@ -56,6 +57,16 @@ export class ClusterRouter {
             const clusters: Cluster[] = yield clusterService.list();
 
             res.json(clusters);
+        });
+    }
+
+    private listKeys(req: Request, res: Response, next: () => void) {
+        co(function* () {
+            const clusterService = new ClusterService(config.db.uri);
+
+            const keys: string[] = yield clusterService.listKeys(req.query.name);
+
+            res.json(keys);
         });
     }
 

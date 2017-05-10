@@ -15,6 +15,7 @@ export class NodeRouter {
 
     constructor() {
         this.router.get('/status', this.status);
+        this.router.get('/getkey', this.getkey);
     }
 
     public GetRouter() {
@@ -28,6 +29,16 @@ export class NodeRouter {
             const status: boolean = yield nodeService.status(req.query.ipAddress, req.query.port);
 
             res.json(status);
+        });
+    }
+
+    private getkey(req: Request, res: Response, next: () => void) {
+        co(function* () {
+            const nodeService = new NodeService(config.db.uri);
+
+            const key: any = yield nodeService.key(req.query.name, req.query.key);
+
+            res.json(key);
         });
     }
 }
