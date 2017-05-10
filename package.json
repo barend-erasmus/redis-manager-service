@@ -1,0 +1,37 @@
+{
+  "name": "redis-manager-service",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "gulp build",
+    "lint": "tslint --fix --exclude \"./src/**/[config|swagger]*.*\" ./src/**/*.ts",
+    "start": "gulp build:dev & node ./dist/app.js",
+    "test": "gulp build:dev & mocha --timeout=5000 ./dist/**/*.test.js & gulp clean",
+    "cover": "gulp build:dev & istanbul cover node_modules/mocha/bin/_mocha --root ./dist ./dist/**/*.test.js & gulp clean"
+  },
+  "author": "Barend Erasmus",
+  "license": "MIT",
+  "dependencies": {
+    "body-parser": "^1.16.1",
+    "co": "^4.6.0",
+    "cors": "^2.8.1",
+    "express": "^4.14.1",
+    "express-winston": "^2.4.0",
+    "mongodb": "^2.2.24",
+    "redis": "^2.6.5",
+    "winston": "^2.3.1"
+  },
+  "devDependencies": {
+    "@types/express": "^4.0.35",
+    "@types/mongodb": "^2.1.40",
+    "@types/redis": "^0.12.36",
+    "gulp": "^3.9.1",
+    "gulp-clean": "^0.3.2",
+    "gulp-rename": "^1.2.2",
+    "gulp-typescript": "^3.1.4",
+    "run-sequence": "^1.2.2",
+    "ts-node": "^2.1.0",
+    "typescript": "^2.1.5"
+  }
+}
