@@ -61,7 +61,7 @@ export class ClusterRouter {
 
     private clear(req: Request, res: Response, next: () => void) {
         co(function* () {
-            const clusterService = new ClusterService(config.mongoUrl);
+            const clusterService = new ClusterService(config.db.uri);
 
             const result: boolean = yield clusterService.clear(req.body.name, req.body.pattern);
 
