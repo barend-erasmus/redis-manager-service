@@ -1,5 +1,7 @@
 # redis-manager-service
 
+![](http://jenkins.developersworkspace.co.za:8080/job/redis-manager-service-nightly/badge/icon)
+
 ## Getting Started
 
 Clone the repository
