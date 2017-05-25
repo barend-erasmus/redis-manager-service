@@ -19,7 +19,7 @@ export class ClusterService {
 
         const self = this;
 
-        return co(function* () {
+        return co(function*() {
             const db: mongo.Db = yield mongo.MongoClient.connect(self.mongoUri);
 
             const collection: mongo.Collection = db.collection('clusters');
@@ -36,13 +36,13 @@ export class ClusterService {
 
         const self = this;
 
-        return co(function* () {
+        return co(function*() {
             const db: mongo.Db = yield mongo.MongoClient.connect(self.mongoUri);
 
             const collection: mongo.Collection = db.collection('clusters');
 
             const cluster: any = yield collection.findOne({
-                name: name
+                name,
             });
 
             db.close();
@@ -51,31 +51,30 @@ export class ClusterService {
         });
     }
 
-
     public details(name: string): Promise<ClusterDetails> {
 
         const self = this;
 
-        return co(function* () {
+        return co(function*() {
             const cluster: Cluster = yield self.find(name);
 
             let nodeDetails: NodeDetails[] = yield cluster.nodes.map(x => self.getNodeDetails(x.ipAddress, x.port));
 
-            nodeDetails = nodeDetails.filter(x => x.role == 'master');
+            nodeDetails = nodeDetails.filter(x => x.role === 'master');
 
-            const usedMemory = nodeDetails.length == 0 ? 0 : Math.round(nodeDetails.map(x => x.usedMemory).reduce((a, b) => {
+            const usedMemory = nodeDetails.length === 0 ? 0 : Math.round(nodeDetails.map(x => x.usedMemory).reduce((a, b) => {
                 return a + b;
             }) / 1000000);
 
-            const expiredKeys = nodeDetails.length == 0 ? 0 : nodeDetails.map(x => x.expiredKeys).reduce((a, b) => {
+            const expiredKeys = nodeDetails.length === 0 ? 0 : nodeDetails.map(x => x.expiredKeys).reduce((a, b) => {
                 return a + b;
             });
 
-            const evictedKeys = nodeDetails.length == 0 ? 0 : nodeDetails.map(x => x.evictedKeys).reduce((a, b) => {
+            const evictedKeys = nodeDetails.length === 0 ? 0 : nodeDetails.map(x => x.evictedKeys).reduce((a, b) => {
                 return a + b;
             });
 
-            const connectedClients = nodeDetails.length == 0 ? 0 : nodeDetails.map(x => x.connectedClients).reduce((a, b) => {
+            const connectedClients = nodeDetails.length === 0 ? 0 : nodeDetails.map(x => x.connectedClients).reduce((a, b) => {
                 return a + b;
             });
 
@@ -85,10 +84,10 @@ export class ClusterService {
     }
 
     public clear(name: string, pattern: string): Promise<boolean> {
-        
+
         const self = this;
 
-        return co(function* () {
+        return co(function*() {
             const cluster: Cluster = yield self.find(name);
 
             yield cluster.nodes.map(x => self.clearNodeKeys(x.ipAddress, x.port, pattern));
@@ -99,11 +98,11 @@ export class ClusterService {
     public listKeys(name: string): Promise<string[]> {
         const self = this;
 
-        return co(function* () {
+        return co(function*() {
             const cluster: Cluster = yield self.find(name);
 
-            const keys:Array<string[]> = yield cluster.nodes.map(x => self.listNodeKeys(x.ipAddress, x.port, '*'));
-            
+            const keys: Array<string[]> = yield cluster.nodes.map(x => self.listNodeKeys(x.ipAddress, x.port, '*'));
+
             let arr: string[] = [];
 
             for (let i = 0; i < keys.length; i++) {
@@ -111,22 +110,21 @@ export class ClusterService {
             }
 
             return arr.filter((elem: string, pos: number) => {
-                return arr.indexOf(elem) == pos;
+                return arr.indexOf(elem) === pos;
             });
         });
     }
-
 
     private clearNodeKeys(ipAddress: string, port: number, pattern: string): Promise<boolean> {
         return this.listNodeKeys(ipAddress, port, pattern).then((keys: string[]) => {
             let tasks = [];
 
             for (let i = 0; i < keys.length; i++) {
-                let p = new Promise((resolve: Function, reject: Function) => {
+                const p = new Promise((resolve: Function, reject: Function) => {
 
-                    let redisClient: redis.RedisClient = redis.createClient({
+                    const redisClient: redis.RedisClient = redis.createClient({
                         host: ipAddress,
-                        port: port
+                        port,
                     });
 
                     redisClient.on('error', (err: Error) => {
@@ -153,7 +151,7 @@ export class ClusterService {
         return new Promise((resolve: Function, reject: Function) => {
             let redisClient: redis.RedisClient = redis.createClient({
                 host: ipAddress,
-                port: port
+                port,
             });
 
             redisClient.on('error', (err: Error) => {
@@ -178,7 +176,7 @@ export class ClusterService {
         return new Promise((resolve: Function, reject: Function) => {
             const redisClient: redis.RedisClient = redis.createClient({
                 host: ipAddress,
-                port: port
+                port,
             });
 
             redisClient.on('error', (err: Error) => {
@@ -197,16 +195,16 @@ export class ClusterService {
                 const arr = result.split(/\r?\n/).map(x => {
                     return {
                         key: x.split(':')[0],
-                        value: x.split(':')[1]
+                        value: x.split(':')[1],
                     };
                 });
 
                 resolve(new NodeDetails(
                     arr.filter(z => z.key == 'role')[0].value,
-                    parseFloat(arr.filter(z => z.key == 'used_memory')[0].value),
-                    parseFloat(arr.filter(z => z.key == 'expired_keys')[0].value),
-                    parseFloat(arr.filter(z => z.key == 'evicted_keys')[0].value),
-                    parseFloat(arr.filter(z => z.key == 'connected_clients')[0].value),
+                    parseFloat(arr.filter(z => z.key === 'used_memory')[0].value),
+                    parseFloat(arr.filter(z => z.key === 'expired_keys')[0].value),
+                    parseFloat(arr.filter(z => z.key === 'evicted_keys')[0].value),
+                    parseFloat(arr.filter(z => z.key === 'connected_clients')[0].value),
                 ))
 
                 redisClient.quit();

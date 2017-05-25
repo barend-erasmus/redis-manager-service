@@ -17,10 +17,10 @@ export class NodeService {
     }
 
     public status(ipAddress: string, port: number): Promise<boolean> {
-        return new Promise((resolve: Function, reject: Function) => {
+        return new Promise((resolve: (result: boolean) => void, reject: () => void) => {
             let redisClient: redis.RedisClient = redis.createClient({
                 host: ipAddress,
-                port: port
+                port,
             });
 
             redisClient.on('error', (err: Error) => {
@@ -31,7 +31,7 @@ export class NodeService {
             redisClient.ping((err: Error, result: any) => {
                 if (err) {
                     resolve(false);
-                } else if (result == "PONG") {
+                } else if (result === "PONG") {
                     resolve(true);
                 } else {
                     resolve(false);
@@ -52,16 +52,16 @@ export class NodeService {
     }
 
     private getNodeKey(ipAddress: string, port: number, key: string): Promise<string> {
-        return new Promise((resolve: Function, reject: Function) => {
+        return new Promise((resolve: (result: string) => void, reject: (err: Error) => void) => {
             let redisClient: redis.RedisClient = redis.createClient({
                 host: ipAddress,
-                port: port
+                port,
             });
 
             redisClient.on('error', (err: Error) => {
                 if (err.message.startsWith('MOVED')) {
                     let ipAddressAndPort = err.message.split(' ')[2];
-                    this.getNodeKey(ipAddressAndPort.split(':')[0], parseInt(ipAddressAndPort.split(':')[1]), key).then((result: string) => {
+                    this.getNodeKey(ipAddressAndPort.split(':')[0], parseInt(ipAddressAndPort.split(':')[1], undefined), key).then((result: string) => {
                         resolve(result);
                     });
                 } else {
@@ -74,7 +74,7 @@ export class NodeService {
                 if (err) {
                     if (err.message.startsWith('MOVED')) {
                         let ipAddressAndPort = err.message.split(' ')[2];
-                        this.getNodeKey(ipAddressAndPort.split(':')[0], parseInt(ipAddressAndPort.split(':')[1]), key).then((result: string) => {
+                        this.getNodeKey(ipAddressAndPort.split(':')[0], parseInt(ipAddressAndPort.split(':')[1], undefined), key).then((result: string) => {
                             resolve(result);
                         });
                     } else {
