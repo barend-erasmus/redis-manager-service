@@ -18,7 +18,7 @@ export class NodeService {
 
     public status(ipAddress: string, port: number): Promise<boolean> {
         return new Promise((resolve: (result: boolean) => void, reject: () => void) => {
-            let redisClient: redis.RedisClient = redis.createClient({
+            const redisClient: redis.RedisClient = redis.createClient({
                 host: ipAddress,
                 port,
             });
@@ -53,14 +53,14 @@ export class NodeService {
 
     private getNodeKey(ipAddress: string, port: number, key: string): Promise<string> {
         return new Promise((resolve: (result: string) => void, reject: (err: Error) => void) => {
-            let redisClient: redis.RedisClient = redis.createClient({
+            const redisClient: redis.RedisClient = redis.createClient({
                 host: ipAddress,
                 port,
             });
 
             redisClient.on('error', (err: Error) => {
                 if (err.message.startsWith('MOVED')) {
-                    let ipAddressAndPort = err.message.split(' ')[2];
+                    const ipAddressAndPort = err.message.split(' ')[2];
                     this.getNodeKey(ipAddressAndPort.split(':')[0], parseInt(ipAddressAndPort.split(':')[1], undefined), key).then((result: string) => {
                         resolve(result);
                     });
@@ -73,7 +73,7 @@ export class NodeService {
             redisClient.get(key, (err: Error, result: any) => {
                 if (err) {
                     if (err.message.startsWith('MOVED')) {
-                        let ipAddressAndPort = err.message.split(' ')[2];
+                        const ipAddressAndPort = err.message.split(' ')[2];
                         this.getNodeKey(ipAddressAndPort.split(':')[0], parseInt(ipAddressAndPort.split(':')[1], undefined), key).then((result: string) => {
                             resolve(result);
                         });

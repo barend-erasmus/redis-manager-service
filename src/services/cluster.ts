@@ -5,8 +5,8 @@ import * as mongo from 'mongodb';
 
 // Imports models
 import { Cluster } from './../models/cluster';
-import { Node } from './../models/node';
 import { ClusterDetails } from './../models/cluster-details';
+import { Node } from './../models/node';
 import { NodeDetails } from './../models/node-details';
 
 export class ClusterService {
@@ -58,23 +58,23 @@ export class ClusterService {
         return co(function*() {
             const cluster: Cluster = yield self.find(name);
 
-            let nodeDetails: NodeDetails[] = yield cluster.nodes.map(x => self.getNodeDetails(x.ipAddress, x.port));
+            let nodeDetails: NodeDetails[] = yield cluster.nodes.map((x) => self.getNodeDetails(x.ipAddress, x.port));
 
             nodeDetails = nodeDetails.filter(x => x.role === 'master');
 
-            const usedMemory = nodeDetails.length === 0 ? 0 : Math.round(nodeDetails.map(x => x.usedMemory).reduce((a, b) => {
+            const usedMemory = nodeDetails.length === 0 ? 0 : Math.round(nodeDetails.map((x) => x.usedMemory).reduce((a, b) => {
                 return a + b;
             }) / 1000000);
 
-            const expiredKeys = nodeDetails.length === 0 ? 0 : nodeDetails.map(x => x.expiredKeys).reduce((a, b) => {
+            const expiredKeys = nodeDetails.length === 0 ? 0 : nodeDetails.map((x) => x.expiredKeys).reduce((a, b) => {
                 return a + b;
             });
 
-            const evictedKeys = nodeDetails.length === 0 ? 0 : nodeDetails.map(x => x.evictedKeys).reduce((a, b) => {
+            const evictedKeys = nodeDetails.length === 0 ? 0 : nodeDetails.map((x) => x.evictedKeys).reduce((a, b) => {
                 return a + b;
             });
 
-            const connectedClients = nodeDetails.length === 0 ? 0 : nodeDetails.map(x => x.connectedClients).reduce((a, b) => {
+            const connectedClients = nodeDetails.length === 0 ? 0 : nodeDetails.map((x) => x.connectedClients).reduce((a, b) => {
                 return a + b;
             });
 
@@ -148,7 +148,7 @@ export class ClusterService {
     }
 
     private listNodeKeys(ipAddress: string, port: number, pattern: string): Promise<string[]> {
-        return new Promise((resolve: Function, reject: Function) => {
+        return new Promise((resolve: (result: string[]) => void, reject: () => void) => {
             let redisClient: redis.RedisClient = redis.createClient({
                 host: ipAddress,
                 port,
@@ -173,7 +173,7 @@ export class ClusterService {
     }
 
     private getNodeDetails(ipAddress: string, port: number): Promise<NodeDetails> {
-        return new Promise((resolve: Function, reject: Function) => {
+        return new Promise((resolve: (result: NodeDetails) => void, reject: (err: Error) => void) => {
             const redisClient: redis.RedisClient = redis.createClient({
                 host: ipAddress,
                 port,
