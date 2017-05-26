@@ -10,7 +10,7 @@ let transportsArr = [];
 transportsArr = [
   new (winston.transports.Console)({ level: 'debug' }),
   new (winston.transports.File)({
-    filename: path.join(config.logging.path, 'redis-manager-api.log'),
+    filename: path.join(config.logging.path, 'redis-manager-service.log'),
     level: 'debug',
   }),
 ];
@@ -26,7 +26,7 @@ export function getLogger(name: string) {
   transportsNameArr = [
     new (winston.transports.Console)({ level: 'debug' }),
     new (winston.transports.File)({
-      filename: path.join(config.logging.path, `redis-manager-api-${name}.log`),
+      filename: path.join(config.logging.path, `redis-manager-service-${name}.log`),
       level: 'debug',
     }),
   ];

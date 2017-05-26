@@ -23,6 +23,10 @@ Start project
 Browse `http://localhost:3000/api`
 
 
-## Installing for production
+## Docker Setup
 
-`curl -s https://raw.githubusercontent.com/barend-erasmus/redis-manager-service/master/install.sh | bash -s "yourapidomain.com" yourapiport yourport`
+`docker run --name redis-manager-db -v /opt/redis-manager-service/mongodb:/data/db -d mongo`
+
+`docker build --no-cache -t redis-manager-service ./`
+
+`docker run -d -p 8080:3000 --name redis-manager-service -v /logs:/logs --link redis-manager-db:mongo -t redis-manager-service`
