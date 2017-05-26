@@ -101,12 +101,12 @@ export class ClusterService {
         return co(function*() {
             const cluster: Cluster = yield self.find(name);
 
-            const keys: Array<string[]> = yield cluster.nodes.map(x => self.listNodeKeys(x.ipAddress, x.port, '*'));
+            const keys: string[][] = yield cluster.nodes.map((x) => self.listNodeKeys(x.ipAddress, x.port, '*'));
 
             let arr: string[] = [];
 
-            for (let i = 0; i < keys.length; i++) {
-                arr = arr.concat(keys[i]);
+            for (let key of keys) {
+                arr = arr.concat(key);
             }
 
             return arr.filter((elem: string, pos: number) => {
@@ -117,10 +117,10 @@ export class ClusterService {
 
     private clearNodeKeys(ipAddress: string, port: number, pattern: string): Promise<boolean> {
         return this.listNodeKeys(ipAddress, port, pattern).then((keys: string[]) => {
-            let tasks = [];
+            const tasks = [];
 
-            for (let i = 0; i < keys.length; i++) {
-                const p = new Promise((resolve: Function, reject: Function) => {
+            for (let key of keys) {
+                const p = new Promise((resolve: (result: boolean) => void, reject: () => void) => {
 
                     const redisClient: redis.RedisClient = redis.createClient({
                         host: ipAddress,
@@ -132,7 +132,7 @@ export class ClusterService {
                         redisClient.quit();
                     });
 
-                    redisClient.del(keys[i], () => {
+                    redisClient.del(key, () => {
                         resolve(true);
                         redisClient.quit();
                     });
@@ -149,7 +149,7 @@ export class ClusterService {
 
     private listNodeKeys(ipAddress: string, port: number, pattern: string): Promise<string[]> {
         return new Promise((resolve: (result: string[]) => void, reject: () => void) => {
-            let redisClient: redis.RedisClient = redis.createClient({
+            const redisClient: redis.RedisClient = redis.createClient({
                 host: ipAddress,
                 port,
             });

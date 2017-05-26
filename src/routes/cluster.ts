@@ -11,8 +11,8 @@ import { ClusterService } from './../services/cluster';
 
 // Imports models
 import { Cluster } from './../models/cluster';
-import { Node } from './../models/node';
 import { ClusterDetails } from './../models/cluster-details';
+import { Node } from './../models/node';
 
 export class ClusterRouter {
 

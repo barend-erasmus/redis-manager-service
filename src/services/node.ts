@@ -1,6 +1,6 @@
 // Imports
-import * as redis from 'redis';
 import * as mongodb from 'mongodb';
+import * as redis from 'redis';
 
 // Imports models
 import { Cluster } from './../models/cluster';
@@ -70,7 +70,7 @@ export class NodeService {
                 redisClient.quit();
             });
 
-            redisClient.get(key, (err: Error, result: any) => {
+            redisClient.get(key, (err: Error, keyValue: any) => {
                 if (err) {
                     if (err.message.startsWith('MOVED')) {
                         const ipAddressAndPort = err.message.split(' ')[2];
@@ -81,7 +81,7 @@ export class NodeService {
                         reject(err);
                     }
                 } else {
-                    resolve(result);
+                    resolve(keyValue);
                 }
 
                 redisClient.quit();
