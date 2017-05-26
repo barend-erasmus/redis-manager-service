@@ -1,7 +1,7 @@
 // Imports
 import * as co from 'co';
-import * as redis from 'redis';
 import * as mongo from 'mongodb';
+import * as redis from 'redis';
 
 // Imports models
 import { Cluster } from './../models/cluster';
@@ -60,7 +60,7 @@ export class ClusterService {
 
             let nodeDetails: NodeDetails[] = yield cluster.nodes.map((x) => self.getNodeDetails(x.ipAddress, x.port));
 
-            nodeDetails = nodeDetails.filter(x => x.role === 'master');
+            nodeDetails = nodeDetails.filter((x) => x.role === 'master');
 
             const usedMemory = nodeDetails.length === 0 ? 0 : Math.round(nodeDetails.map((x) => x.usedMemory).reduce((a, b) => {
                 return a + b;
@@ -192,7 +192,7 @@ export class ClusterService {
                     return;
                 }
 
-                const arr = result.split(/\r?\n/).map(x => {
+                const arr = result.split(/\r?\n/).map((x) => {
                     return {
                         key: x.split(':')[0],
                         value: x.split(':')[1],
@@ -200,12 +200,12 @@ export class ClusterService {
                 });
 
                 resolve(new NodeDetails(
-                    arr.filter(z => z.key == 'role')[0].value,
+                    arr.filter((z) => z.key === 'role')[0].value,
                     parseFloat(arr.filter((z) => z.key === 'used_memory')[0].value),
                     parseFloat(arr.filter((z) => z.key === 'expired_keys')[0].value),
                     parseFloat(arr.filter((z) => z.key === 'evicted_keys')[0].value),
                     parseFloat(arr.filter((z) => z.key === 'connected_clients')[0].value),
-                ))
+                ));
 
                 redisClient.quit();
             });

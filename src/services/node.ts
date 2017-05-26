@@ -42,7 +42,6 @@ export class NodeService {
         });
     }
 
-
     public key(clusterName: string, key: string): Promise<string> {
         return this.clusterService.find(clusterName).then((cluster: Cluster) => {
             return this.getNodeKey(cluster.nodes[0].ipAddress, cluster.nodes[0].port, key);
