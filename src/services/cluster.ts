@@ -105,7 +105,7 @@ export class ClusterService {
 
             let arr: string[] = [];
 
-            for (let key of keys) {
+            for (const key of keys) {
                 arr = arr.concat(key);
             }
 
@@ -119,7 +119,7 @@ export class ClusterService {
         return this.listNodeKeys(ipAddress, port, pattern).then((keys: string[]) => {
             const tasks = [];
 
-            for (let key of keys) {
+            for (const key of keys) {
                 const p = new Promise((resolve: (result: boolean) => void, reject: () => void) => {
 
                     const redisClient: redis.RedisClient = redis.createClient({
