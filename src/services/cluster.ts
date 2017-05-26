@@ -90,7 +90,7 @@ export class ClusterService {
         return co(function*() {
             const cluster: Cluster = yield self.find(name);
 
-            yield cluster.nodes.map(x => self.clearNodeKeys(x.ipAddress, x.port, pattern));
+            yield cluster.nodes.map((x) => self.clearNodeKeys(x.ipAddress, x.port, pattern));
             return true;
         });
     }
@@ -201,10 +201,10 @@ export class ClusterService {
 
                 resolve(new NodeDetails(
                     arr.filter(z => z.key == 'role')[0].value,
-                    parseFloat(arr.filter(z => z.key === 'used_memory')[0].value),
-                    parseFloat(arr.filter(z => z.key === 'expired_keys')[0].value),
-                    parseFloat(arr.filter(z => z.key === 'evicted_keys')[0].value),
-                    parseFloat(arr.filter(z => z.key === 'connected_clients')[0].value),
+                    parseFloat(arr.filter((z) => z.key === 'used_memory')[0].value),
+                    parseFloat(arr.filter((z) => z.key === 'expired_keys')[0].value),
+                    parseFloat(arr.filter((z) => z.key === 'evicted_keys')[0].value),
+                    parseFloat(arr.filter((z) => z.key === 'connected_clients')[0].value),
                 ))
 
                 redisClient.quit();
