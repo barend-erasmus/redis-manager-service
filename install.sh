@@ -3,8 +3,7 @@
 # Declare varibles
 apidomain=$1
 apiport=$2
-domain=$3
-port=$4
+port=$3
 
 # Update machine package indexes
 sudo apt-get update
@@ -32,14 +31,6 @@ git clone https://github.com/barend-erasmus/redis-manager-service.git
 
 # Change to cloned directory
 cd ./redis-manager-service
-
-# Replace domain
-sed -i -- "s/yourapidomain.com/$apidomain/g" ./src/config.prod.ts
-sed -i -- "s/yourdomain.com/$domain/g" ./src/config.prod.ts
-
-# Replace port
-sed -i -- "s/yourapiport/$apiport/g" ./src/config.prod.ts
-sed -i -- "s/yourport/$port/g" ./src/config.prod.ts
 
 # Install node packages
 npm install

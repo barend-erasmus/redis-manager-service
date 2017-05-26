@@ -25,4 +25,4 @@ Browse `http://localhost:3000/api`
 
 ## Installing for production
 
-`curl -s https://raw.githubusercontent.com/barend-erasmus/redis-manager-service/master/install.sh | bash -s "yourapidomain.com" yourapiport "yourdomain.com" yourport`
+`curl -s https://raw.githubusercontent.com/barend-erasmus/redis-manager-service/master/install.sh | bash -s "yourapidomain.com" yourapiport yourport`
