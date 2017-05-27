@@ -29,4 +29,4 @@ Browse `http://localhost:3000/api`
 
 `docker build --no-cache -t redis-manager-service ./`
 
-`docker run -d -p 8080:3000 --name redis-manager-service -v /logs:/logs --link redis-manager-db:mongo -t redis-manager-service`
+`docker run -d -p 8080:3000 --name redis-manager-service -v /logs:/logs -v /opt/redis-manager-service:/opt/redis-manager-service --link redis-manager-db:mongo -t redis-manager-service`
