@@ -135,7 +135,7 @@ gulp.task('docker:build', function (done) {
         username: argv.username,
         password: argv.password
     }).then(function () {
-        ssh.execCommand(`docker build --no-cache -t ${argv.service} /opt/${argv.service}`).then(function (result) {
+        ssh.execCommand(`docker build --no-cache -t ${argv.service} /docker-uploads/${argv.service}`).then(function (result) {
             return ssh.execCommand(`docker run -d -p 8080:3000 --name ${argv.service} -v /logs:/logs -v /opt/${argv.service}:/opt/${argv.service} --link redis-manager-db:mongo -t ${argv.service}`);
         }).then(function (result) {
             ssh.dispose();
