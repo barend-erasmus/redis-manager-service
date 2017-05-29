@@ -65,7 +65,7 @@ gulp.task('publish:source', function () {
 
     return gulp
         .src(['./dist/**'])
-        .pipe(gulpSSH.dest(argv.dest));
+        .pipe(gulpSSH.dest(`/opt/${argv.service}`));
 });
 
 gulp.task('publish:modules', function (done) {
@@ -103,7 +103,7 @@ gulp.task('publish:dockerfile', function () {
 
     return gulp
         .src(['./Dockerfile'])
-        .pipe(gulpSSH.dest(argv.dest));
+        .pipe(gulpSSH.dest(`/docker-uploads/${argv.service}`));
 });
 
 gulp.task('docker:stop', function (done) {
