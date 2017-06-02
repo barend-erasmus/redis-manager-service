@@ -1,0 +1,30 @@
+{
+    "machine": {
+        "host": "$host",
+        "username": "$username",
+        "password": "$password"
+    },
+    "commands": [
+        "sudo apt-get update",
+        "curl -sL https://deb.nodesource.com/setup_7.x | sudo -E bash -",
+        "sudo apt-get install -y nodejs",
+
+        "npm --prefix /opt/redis-manager-service install",
+        "docker stop redis-manager-service",
+        "docker rm redis-manager-service",
+        "docker build --no-cache -t redis-manager-service /docker-uploads/redis-manager-service",
+        "docker run -d -p 8080:3000 --name redis-manager-service -v /logs:/logs -v /opt/redis-manager-service:/opt/redis-manager-service --link redis-manager-db:mongo -t redis-manager-service"
+    ],
+    "directories": [
+        {
+            "source": "$workspace/dist",
+            "destination": "/opt/redis-manager-service"
+        }
+    ],
+    "files": [
+        {
+            "source": "$workspace/Dockerfile",
+            "destination": "/docker-uploads/redis-manager-service/Dockerfile"
+        }
+    ]
+}

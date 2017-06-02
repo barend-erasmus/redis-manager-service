@@ -3,11 +3,8 @@ var gulp = require('gulp');
 var clean = require('gulp-clean');
 var ts = require('gulp-typescript');
 var rename = require("gulp-rename");
-var GulpSSH = require('gulp-ssh');
 var sequence = require('run-sequence');
 var argv = require('yargs').argv;
-var merge = require('merge-stream');
-var node_ssh = require('node-ssh')
 
 // Compiles typescript files
 gulp.task('compile:ts', function () {
@@ -48,121 +45,4 @@ gulp.task('build', function (done) {
 
 gulp.task('build:dev', function (done) {
     sequence('clean', 'compile:ts', 'copy:package.json', done);
-});
-
-gulp.task('publish:source', function () {
-    var config = {
-        host: argv.host,
-        port: 22,
-        username: argv.username,
-        password: argv.password
-    };
-
-    var gulpSSH = new GulpSSH({
-        ignoreErrors: false,
-        sshConfig: config
-    });
-
-    return gulp
-        .src(['./dist/**'])
-        .pipe(gulpSSH.dest(`/opt/${argv.service}`));
-});
-
-gulp.task('publish:modules', function (done) {
-
-    var ssh = new node_ssh();
-
-    ssh.connect({
-        host: argv.host,
-        username: argv.username,
-        password: argv.password
-    }).then(function () {
-        ssh.execCommand('npm install', { cwd: `/opt/${argv.service}`}).then(function (result) {
-            ssh.dispose();
-            done();
-        }).catch(function (err) {
-            done(err);
-        });
-    }).catch(function (err) {
-        done(err);
-    });
-});
-
-gulp.task('publish:dockerfile', function () {
-    var config = {
-        host: argv.host,
-        port: 22,
-        username: argv.username,
-        password: argv.password
-    };
-
-    var gulpSSH = new GulpSSH({
-        ignoreErrors: false,
-        sshConfig: config
-    });
-
-    return gulp
-        .src(['./Dockerfile'])
-        .pipe(gulpSSH.dest(`/docker-uploads/${argv.service}`));
-});
-
-gulp.task('docker:stop', function (done) {
-    var ssh = new node_ssh();
-
-    ssh.connect({
-        host: argv.host,
-        username: argv.username,
-        password: argv.password
-    }).then(function () {
-        ssh.execCommand(`docker stop ${argv.service}`).then(function (result) {
-            return ssh.execCommand(`docker rm ${argv.service}`);
-        }).then(function (result) {
-            ssh.dispose();
-            done();
-        }).catch(function (err) {
-            done(err);
-        });
-    }).catch(function (err) {
-        done(err);
-    });
-});
-
-gulp.task('docker:build', function (done) {
-    var ssh = new node_ssh();
-
-    ssh.connect({
-        host: argv.host,
-        username: argv.username,
-        password: argv.password
-    }).then(function () {
-        ssh.execCommand(`docker build --no-cache -t ${argv.service} /docker-uploads/${argv.service}`).then(function (result) {
-            return ssh.execCommand(`docker run -d -p 8080:3000 --name ${argv.service} -v /logs:/logs -v /opt/${argv.service}:/opt/${argv.service} --link redis-manager-db:mongo -t ${argv.service}`);
-        }).then(function (result) {
-            ssh.dispose();
-            done();
-        }).catch(function (err) {
-            done(err);
-        });
-    }).catch(function (err) {
-        done(err);
-    });
-});
-
-gulp.task('docker:start', function (done) {
-    var ssh = new node_ssh();
-
-    ssh.connect({
-        host: argv.host,
-        username: argv.username,
-        password: argv.password
-    }).then(function () {
-        ssh.execCommand(`docker start ${argv.service}`).then(function (result) {
-            ssh.dispose();
-            done();
-        }).catch(function (err) {
-            done(err);
-        });
-    }).catch(function (err) {
-        done(err);
-    });
 });
