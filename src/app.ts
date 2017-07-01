@@ -7,8 +7,8 @@ import * as cors from 'cors';
 import expressWinston = require('express-winston');
 
 // Imports routes
-import { NodeRouter } from './routes/node';
 import { ClusterRouter } from './routes/cluster';
+import { NodeRouter } from './routes/node';
 
 // Imports logger
 import { logger } from './logger';
