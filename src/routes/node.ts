@@ -11,18 +11,7 @@ import { NodeService } from './../services/node';
 
 export class NodeRouter {
 
-    private router = express.Router();
-
-    constructor() {
-        this.router.get('/status', this.status);
-        this.router.get('/getkey', this.getkey);
-    }
-
-    public GetRouter() {
-        return this.router;
-    }
-
-    private status(req: Request, res: Response, next: () => void) {
+    public static status(req: Request, res: Response, next: () => void) {
         co(function*() {
             const nodeService = new NodeService(config.db.uri);
 
@@ -32,7 +21,7 @@ export class NodeRouter {
         });
     }
 
-    private getkey(req: Request, res: Response, next: () => void) {
+    public static getkey(req: Request, res: Response, next: () => void) {
         co(function*() {
             const nodeService = new NodeService(config.db.uri);
 

@@ -13,8 +13,14 @@ import { ClusterRouter } from './routes/cluster';
 // Imports logger
 import { logger } from './logger';
 
-// Imports configurations
-import { config } from './config';
+// Import configurations
+let config = require('./config').config;
+
+const argv = require('yargs').argv;
+
+if (argv.prod) {
+    config = require('./config.prod').config;
+}
 
 export class RedisManagerApi {
 
@@ -52,8 +58,14 @@ export class RedisManagerApi {
     }
 
     private configureRoutes(app: express.Express) {
-        app.use("/api/cluster", new ClusterRouter().GetRouter());
-        app.use("/api/node", new NodeRouter().GetRouter());
+        app.get('/api/cluster/list', ClusterRouter.list);
+        app.get('/api/cluster/find', ClusterRouter.find);
+        app.get('/api/cluster/details', ClusterRouter.details);
+        app.post('/api/cluster/clear', ClusterRouter.clear);
+        app.get('/api/cluster/listkeys', ClusterRouter.listKeys);
+
+        app.use("/api/node/status", NodeRouter.status);
+        app.use("/api/node/getkey", NodeRouter.getkey);
     }
 
     private configureErrorHandling(app: express.Express) {
@@ -65,8 +77,8 @@ export class RedisManagerApi {
     }
 }
 
-const port = process.env.PORT | 3000;
+const port = 3000;
 
 const api = new RedisManagerApi(express(), port);
 api.run();
-logger.info(`Listening on ${port}`);
+logger.info(`listening on ${port}`);

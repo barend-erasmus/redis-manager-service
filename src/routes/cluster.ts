@@ -16,21 +16,7 @@ import { Node } from './../models/node';
 
 export class ClusterRouter {
 
-    private router = express.Router();
-
-    constructor() {
-        this.router.get('/list', this.list);
-        this.router.get('/find', this.find);
-        this.router.get('/details', this.details);
-        this.router.post('/clear', this.clear);
-        this.router.get('/listkeys', this.listKeys);
-    }
-
-    public GetRouter() {
-        return this.router;
-    }
-
-    private details(req: Request, res: Response, next: () => void) {
+    public static details(req: Request, res: Response, next: () => void) {
         co(function*() {
             const clusterService = new ClusterService(config.db.uri);
 
@@ -40,7 +26,7 @@ export class ClusterRouter {
         });
     }
 
-    private find(req: Request, res: Response, next: () => void) {
+    public static find(req: Request, res: Response, next: () => void) {
         co(function*() {
             const clusterService = new ClusterService(config.db.uri);
 
@@ -50,7 +36,7 @@ export class ClusterRouter {
         });
     }
 
-    private list(req: Request, res: Response, next: () => void) {
+    public static list(req: Request, res: Response, next: () => void) {
         co(function*() {
             const clusterService = new ClusterService(config.db.uri);
 
@@ -60,7 +46,7 @@ export class ClusterRouter {
         });
     }
 
-    private listKeys(req: Request, res: Response, next: () => void) {
+    public static listKeys(req: Request, res: Response, next: () => void) {
         co(function*() {
             const clusterService = new ClusterService(config.db.uri);
 
@@ -70,7 +56,7 @@ export class ClusterRouter {
         });
     }
 
-    private clear(req: Request, res: Response, next: () => void) {
+    public static clear(req: Request, res: Response, next: () => void) {
         co(function*() {
             const clusterService = new ClusterService(config.db.uri);
 

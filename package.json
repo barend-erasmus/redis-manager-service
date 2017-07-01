@@ -4,11 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "gulp build",
-    "lint": "tslint --fix --exclude \"./src/**/[config|swagger]*.*\" ./src/**/*.ts",
-    "start": "gulp build:dev & node ./dist/app.js",
-    "test": "gulp build:dev & mocha --timeout=5000 ./dist/**/*.test.js & gulp clean",
-    "cover": "gulp build:dev & istanbul cover node_modules/mocha/bin/_mocha --root ./dist ./dist/**/*.test.js & gulp clean"
+    "start": "tsc & node ./src/app.js",
+    "test": "tsc & mocha ./src/**/*.test.js",
+    "cover": "tsc & istanbul cover node_modules/mocha/bin/_mocha --root ./src ./src/**/*.test.js"
   },
   "author": "Barend Erasmus",
   "license": "MIT",
@@ -20,22 +18,14 @@
     "express-winston": "^2.4.0",
     "mongodb": "^2.2.24",
     "redis": "^2.6.5",
-    "winston": "^2.3.1"
+    "winston": "^2.3.1",
+    "yargs": "^8.0.1"
   },
   "devDependencies": {
     "@types/express": "^4.0.35",
     "@types/mongodb": "^2.1.40",
     "@types/redis": "^0.12.36",
-    "gulp": "^3.9.1",
-    "gulp-clean": "^0.3.2",
-    "gulp-rename": "^1.2.2",
-    "gulp-ssh": "^0.6.0",
-    "gulp-typescript": "^3.1.4",
-    "merge-stream": "^1.0.1",
-    "node-ssh": "^4.2.2",
-    "run-sequence": "^1.2.2",
     "ts-node": "^2.1.0",
-    "typescript": "^2.1.5",
-    "yargs": "^8.0.1"
+    "typescript": "^2.1.5"
   }
 }
