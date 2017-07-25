@@ -3,8 +3,14 @@ import * as co from 'co';
 import { Express, Request, Response } from "express";
 import * as express from 'express';
 
-// Imports configuration
-import { config } from './../config';
+// Import configurations
+let config = require('./../config').config;
+
+const argv = require('yargs').argv;
+
+if (argv.prod) {
+    config = require('./../config.prod').config;
+}
 
 // Imports services
 import { NodeService } from './../services/node';

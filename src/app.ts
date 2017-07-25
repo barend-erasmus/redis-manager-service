@@ -1,5 +1,7 @@
 // Imports
 import express = require("express");
+const swaggerUi = require('swagger-ui-express');
+import { swaggerDocument } from './swagger.json';
 
 // Imports middleware
 import bodyParser = require('body-parser');
@@ -55,6 +57,8 @@ export class RedisManagerApi {
             winstonInstance: logger,
         }));
 
+        app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
     }
 
     private configureRoutes(app: express.Express) {
@@ -77,7 +81,7 @@ export class RedisManagerApi {
     }
 }
 
-const port = 3000;
+const port = argv.port || 3000;
 
 const api = new RedisManagerApi(express(), port);
 api.run();

@@ -3,8 +3,14 @@ import * as co from 'co';
 import { Express, Request, Response } from "express";
 import * as express from 'express';
 
-// Imports configuration
-import { config } from './../config';
+// Import configurations
+let config = require('./../config').config;
+
+const argv = require('yargs').argv;
+
+if (argv.prod) {
+    config = require('./../config.prod').config;
+}
 
 // Imports services
 import { ClusterService } from './../services/cluster';
@@ -16,8 +22,9 @@ import { Node } from './../models/node';
 
 export class ClusterRouter {
 
+
     public static details(req: Request, res: Response, next: () => void) {
-        co(function*() {
+        co(function* () {
             const clusterService = new ClusterService(config.db.uri);
 
             const clusterDetails: ClusterDetails = yield clusterService.details(req.query.name);
@@ -27,7 +34,7 @@ export class ClusterRouter {
     }
 
     public static find(req: Request, res: Response, next: () => void) {
-        co(function*() {
+        co(function* () {
             const clusterService = new ClusterService(config.db.uri);
 
             const cluster: Cluster = yield clusterService.find(req.query.name);
@@ -37,7 +44,7 @@ export class ClusterRouter {
     }
 
     public static list(req: Request, res: Response, next: () => void) {
-        co(function*() {
+        co(function* () {
             const clusterService = new ClusterService(config.db.uri);
 
             const clusters: Cluster[] = yield clusterService.list();
@@ -47,7 +54,7 @@ export class ClusterRouter {
     }
 
     public static listKeys(req: Request, res: Response, next: () => void) {
-        co(function*() {
+        co(function* () {
             const clusterService = new ClusterService(config.db.uri);
 
             const keys: string[] = yield clusterService.listKeys(req.query.name);
@@ -57,7 +64,7 @@ export class ClusterRouter {
     }
 
     public static clear(req: Request, res: Response, next: () => void) {
-        co(function*() {
+        co(function* () {
             const clusterService = new ClusterService(config.db.uri);
 
             const result: boolean = yield clusterService.clear(req.body.name, req.body.pattern);

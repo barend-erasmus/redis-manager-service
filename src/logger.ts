@@ -11,7 +11,6 @@ if (argv.prod) {
     config = require('./config.prod').config;
 }
 
-
 let transportsArr = [];
 
 transportsArr = [

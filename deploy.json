@@ -9,14 +9,12 @@
         "curl -sL https://deb.nodesource.com/setup_7.x | sudo -E bash -",
         "sudo apt-get install -y nodejs",
 
+        "npm install pm2 -g",
+
+        "mkdir /logs",
         "npm --prefix /opt/redis-manager-service install",
-        "docker stop redis-manager-service",
-        "docker rm redis-manager-service",
-        "docker stop redis-manager-db",
-        "docker rm redis-manager-db",
-        "docker build --no-cache -t redis-manager-service /docker-uploads/redis-manager-service",
-        "docker run --name redis-manager-db -v /opt/redis-manager-db:/data/db -d mongo",
-        "docker run -d -p 8080:3000 --name redis-manager-service --link redis-manager-db:mongo -v /logs:/logs -v /opt/redis-manager-service:/opt/redis-manager-service -t redis-manager-service"
+        "pm2 stop redis-manager-service",
+        "pm2 start /opt/redis-manager-service/src/app.js --name redis-manager-service -- --prod --port 8086"
     ],
     "directories": [
         {
@@ -28,10 +26,6 @@
         {
             "source": "$workspace/package.json",
             "destination": "/opt/redis-manager-service/package.json"
-        },
-        {
-            "source": "$workspace/Dockerfile",
-            "destination": "/docker-uploads/redis-manager-service/Dockerfile"
         }
     ]
 }
